@@ -1,13 +1,15 @@
 package org.example.objects;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import org.example.filesystem.GitFileSystem;
+
 import java.nio.charset.StandardCharsets;
 
+
 public class Blob {
-    private int size;
-    private String content;
+
+    public String objectType = "blob";
+    private final int size;
+    private final String content;
 
     /**
      *  コンストラクタ
@@ -17,30 +19,46 @@ public class Blob {
         this.content = content;
     }
 
+    // TODO
+    // .git/objectの中を与えたら、それからblobオブジェクト作成
+    public Blob(byte[] bytes){
+        this.content = new String(bytes, StandardCharsets.UTF_8);
+        this.size = content.length();
+    }
+
     /**
-     *
-     * */
-    public void setSize(int size){ this.size = size; }
-    public int getSize(){ return this.size;}
-    public void setContent(String content){ this.content = content; }
-    public String getContent(){ return this.content; }
-
-    //　public Option<self> from は一旦むし
-
+     * 書き込むためのフォーマットにする
+     */
     public byte[] asBytes(){
-        String header = String.format("blob %d\0", this.size);
+        String header = String.format("%s %d\0", objectType, size);
         String store = header + this.content;
         return store.getBytes(StandardCharsets.UTF_8);
     }
 
-    public byte[] calcHash(byte[] input){
-        try{
-        MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
-        byte[] hashBytes = sha1.digest(input);
-        return hashBytes;
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null; // エラーの場合はnullを返すか、適切なエラーハンドリングを行う
-        }
+    public String asString(){
+        String header = String.format("%s %d\0", objectType, size);
+        return header + this.content;
+    }
+
+    /**
+     * hash値を計算する(これはいらないかも)
+     */
+    public byte[] calcHash() throws Exception {
+        return GitFileSystem.calcHash(asBytes());
+    }
+
+    /**
+     * zlibで圧縮する(これはいらないかも)
+     * */
+    public byte[] applyZlib() throws Exception{
+        return GitFileSystem.compress(asBytes());
+    }
+
+    public int getSize(){ return size;}
+    public String getContent(){return content;}
+
+    @Override
+    public String toString(){
+        return content;
     }
 }

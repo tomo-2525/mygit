@@ -5,16 +5,13 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.nio.file.Files;
 
-public class init {
+public class Init {
 
-    public static  void main(String[] args){
-        try{
-            execute("mygit");
-        } catch (IOException e){
-            e.printStackTrace();
-        }
+    public static void execute(String[] args) throws IOException {
+        init(args[1]);
     }
-    public static void execute(String dir) throws IOException {
+
+    public static void init(String dir) throws IOException {
         // .gitディレクトリの作成
         System.out.println(dir);
         File gitDir = new File(dir);

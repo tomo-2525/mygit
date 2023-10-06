@@ -4,6 +4,9 @@ import java.util.List;
 
 public class Tree {
 
+    /**
+     *
+     * */
     public List<File> contents;
 
     public class File{
@@ -13,12 +16,12 @@ public class Tree {
     }
 
     // File
-    public byte[] encode(){
-
-    }
+//    public byte[] encode(){
+//
+//    }
 
     // Tree
-    public byte[] asByte(){
-
-    }
+//    public byte[] asByte(){
+//
+//    }
 }
